@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daftar Barang</title>
+
+<style>
+body { font-family: Arial; padding:10px; }
+table { width:100%; border-collapse:collapse; }
+th,td { border:1px solid #ccc; padding:6px; }
+td img { max-width:120px; }
+@media(max-width:768px){
+  table { display:block; overflow-x:auto; }
+}
+</style>
+</head>
+
+<body>
+
+<h3>Input Barang</h3>
+<form id="form">
+<input name="REQ_ID" placeholder="REQ ID" required>
+<input name="ENTITY" placeholder="Entity">
+<input name="ITEM" placeholder="Item">
+<input name="DEPT" placeholder="Dept">
+<input name="LOKASI" placeholder="Lokasi">
+<input name="BRAND" placeholder="Brand">
+<input name="REMARK" placeholder="Remark">
+<button>Simpan</button>
+</form>
+
+<hr>
+
+<h3>Daftar Barang</h3>
+<table>
+<thead>
+<tr>
+<th>REQ_ID</th><th>ENTITY</th><th>ITEM</th><th>DEPT</th>
+<th>LOKASI</th><th>BRAND</th><th>REMARK</th><th>BARCODE</th>
+</tr>
+</thead>
+<tbody id="data"></tbody>
+</table>
+
+<script>
+const API = "PASTE_API_URL_DI_SINI";
+
+document.getElementById("form").onsubmit = async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+
+  await fetch(API,{
+    method:"POST",
+    body:JSON.stringify(data)
+  });
+
+  alert("Tersimpan");
+  location.reload();
+};
+
+fetch(API)
+.then(r=>r.json())
+.then(rows=>{
+  const el=document.getElementById("data");
+  rows.forEach(r=>{
+    el.innerHTML+=`
+    <tr>
+      <td>${r.REQ_ID}</td>
+      <td>${r.ENTITY}</td>
+      <td>${r.ITEM}</td>
+      <td>${r.DEPT}</td>
+      <td>${r.LOKASI}</td>
+      <td>${r.BRAND}</td>
+      <td>${r.REMARK}</td>
+      <td>${r.BARCODE}</td>
+    </tr>`;
+  });
+});
+</script>
+
+</body>
+</html>
