@@ -1,43 +1,94 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Daftar Barang</title>
+<title>Daftar Barang HK</title>
 
 <style>
-body { font-family: Arial; padding:10px; }
-table { width:100%; border-collapse:collapse; }
-th,td { border:1px solid #ccc; padding:6px; }
-td img { max-width:120px; }
-@media(max-width:768px){
-  table { display:block; overflow-x:auto; }
+body {
+  font-family: Arial, sans-serif;
+  padding: 10px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+form input {
+  padding: 6px;
+  flex: 1 1 140px;
+}
+
+form button {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+td img {
+  max-width: 120px;
+}
+
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h3>Input Barang</h3>
+<h2>Input Barang</h2>
+
 <form id="form">
-<input name="REQ_ID" placeholder="REQ ID" required>
-<input name="ENTITY" placeholder="Entity">
-<input name="ITEM" placeholder="Item">
-<input name="DEPT" placeholder="Dept">
-<input name="LOKASI" placeholder="Lokasi">
-<input name="BRAND" placeholder="Brand">
-<input name="REMARK" placeholder="Remark">
-<button>Simpan</button>
+  <input name="REQ_ID" placeholder="REQ ID" required>
+  <input name="ENTITY" placeholder="Entity">
+  <input name="ITEM" placeholder="Item">
+  <input name="DEPT" placeholder="Dept">
+  <input name="LOKASI" placeholder="Lokasi">
+  <input name="BRAND" placeholder="Brand">
+  <input name="REMARK" placeholder="Remark">
+  <button type="submit">Simpan</button>
 </form>
 
 <hr>
 
-<h3>Daftar Barang</h3>
+<h2>Daftar Barang (HK)</h2>
+
 <table>
 <thead>
 <tr>
-<th>REQ_ID</th><th>ENTITY</th><th>ITEM</th><th>DEPT</th>
-<th>LOKASI</th><th>BRAND</th><th>REMARK</th><th>BARCODE</th>
+  <th>REQ_ID</th>
+  <th>ENTITY</th>
+  <th>ITEM</th>
+  <th>DEPT</th>
+  <th>LOKASI</th>
+  <th>BRAND</th>
+  <th>REMARK</th>
+  <th>BARCODE</th>
 </tr>
 </thead>
 <tbody id="data"></tbody>
@@ -46,37 +97,49 @@ td img { max-width:120px; }
 <script>
 const API = "https://script.google.com/macros/s/AKfycbz4fcjNkg8wP6bRLwx02UBg6a3W_rCvT4HqKAOqV9Z4MeAt0SPbv8fIPrXj6fpKtAgTNA/exec";
 
+// ===== INPUT DATA =====
 document.getElementById("form").onsubmit = async e => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(e.target));
 
-  await fetch(API,{
-    method:"POST",
-    body:JSON.stringify(data)
+  await fetch(API, {
+    method: "POST",
+    body: JSON.stringify(data)
   });
 
-  alert("Tersimpan");
-  location.reload();
+  alert("Data berhasil disimpan ke Spreadsheet");
+  e.target.reset();
+  loadData();
 };
 
-fetch(API)
-.then(r=>r.json())
-.then(rows=>{
-  const el=document.getElementById("data");
-  rows.forEach(r=>{
-    el.innerHTML+=`
-    <tr>
-      <td>${r.REQ_ID}</td>
-      <td>${r.ENTITY}</td>
-      <td>${r.ITEM}</td>
-      <td>${r.DEPT}</td>
-      <td>${r.LOKASI}</td>
-      <td>${r.BRAND}</td>
-      <td>${r.REMARK}</td>
-      <td>${r.BARCODE}</td>
-    </tr>`;
-  });
-});
+// ===== LOAD DATA =====
+function loadData() {
+  fetch(API)
+    .then(res => res.json())
+    .then(rows => {
+      const tbody = document.getElementById("data");
+      tbody.innerHTML = "";
+
+      rows.forEach(r => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${r.REQ_ID}</td>
+            <td>${r.ENTITY}</td>
+            <td>${r.ITEM}</td>
+            <td>${r.DEPT}</td>
+            <td>${r.LOKASI}</td>
+            <td>${r.BRAND}</td>
+            <td>${r.REMARK}</td>
+            <td>
+              <img src="https://bwipjs-api.metafloor.com/?bcid=code128&text=${r.REQ_ID}&includetext">
+            </td>
+          </tr>
+        `;
+      });
+    });
+}
+
+loadData();
 </script>
 
 </body>
