@@ -130,8 +130,10 @@ function loadData() {
             <td>${r.LOKASI}</td>
             <td>${r.BRAND}</td>
             <td>${r.REMARK}</td>
-            <td>
-              <img src="https://bwipjs-api.metafloor.com/?bcid=code128&text=${r.REQ_ID}&includetext">
+            <td style="text-align:center">
+              <img 
+                src="https://bwipjs-api.metafloor.com/?bcid=code128&text=${r.REQ_ID}&includetext"
+                alt="barcode ${r.REQ_ID}">
             </td>
           </tr>
         `;
